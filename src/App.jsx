@@ -31,6 +31,7 @@ function App() {
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [exportStatus, setExportStatus] = useState('')
+  const [hasStarted, setHasStarted] = useState(false)
 
   useEffect(() => {
     setHasSubmitted(localStorage.getItem(storageKey) === 'true')
@@ -137,6 +138,19 @@ function App() {
     }
   }
 
+  const handleStart = async () => {
+    setHasStarted(true)
+    const audio = audioRef.current
+    if (!audio) return
+
+    try {
+      await audio.play()
+      setIsPlaying(true)
+    } catch (error) {
+      setIsPlaying(false)
+    }
+  }
+
   const handleExportGuests = async () => {
     setIsExporting(true)
     setExportStatus('')
@@ -174,7 +188,18 @@ function App() {
   }
 
   return (
-    <main className="page">
+    <>
+      {!hasStarted ? (
+        <div className="welcome-overlay">
+          <div className="welcome-card">
+            <p className="welcome-title">Prontos para festejar?</p>
+            <button className="welcome-button" type="button" onClick={handleStart}>
+              SIM!
+            </button>
+          </div>
+        </div>
+      ) : (
+        <main className="page">
       <section className="page-section">
         <div
           className="page-frame"
@@ -202,7 +227,6 @@ function App() {
             onClick={handleExportGuests}
             disabled={isExporting}
           >
-            
           </button>
           {exportStatus ? (
             <p className="export-status" role="status">
@@ -225,12 +249,6 @@ function App() {
               </svg>
             )}
           </button>
-          <audio
-            ref={audioRef}
-            src={audioSrc}
-            preload="auto"
-            onEnded={() => setIsPlaying(false)}
-          />
           <a
             className="map-pin"
             href="https://maps.app.goo.gl/WTJVm7AwxRhMLXvq7"
@@ -281,9 +299,9 @@ function App() {
               </div>
             ) : (
               <div className="rsvp-card">
-                <h2 className="rsvp-title">Confirme sua presença</h2>
+                <h2 className="rsvp-title">Confirme sua presenca</h2>
                 <p className="rsvp-text">
-                  Deixe seu nome para confirmar sua presença na lista.
+                  Deixe seu nome para confirmar sua presenca na lista.
                 </p>
                 <form className="rsvp-form" onSubmit={handleSubmit}>
                   <label className="rsvp-field">
@@ -374,7 +392,7 @@ function App() {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Enviando...' : 'Confirmar presença'}
+                    {isSubmitting ? 'Enviando...' : 'Confirmar presenca'}
                   </button>
                 </form>
                 {status.message ? (
@@ -387,7 +405,15 @@ function App() {
           </div>
         </div>
       </section>
-    </main>
+        </main>
+      )}
+      <audio
+        ref={audioRef}
+        src={audioSrc}
+        preload="auto"
+        onEnded={() => setIsPlaying(false)}
+      />
+    </>
   )
 }
 
