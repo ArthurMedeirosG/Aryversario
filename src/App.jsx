@@ -29,6 +29,8 @@ function App() {
   const [guestCount, setGuestCount] = useState('1')
   const [guestNames, setGuestNames] = useState([])
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const [exportStatus, setExportStatus] = useState('')
 
   useEffect(() => {
     setHasSubmitted(localStorage.getItem(storageKey) === 'true')
@@ -135,6 +137,42 @@ function App() {
     }
   }
 
+  const handleExportGuests = async () => {
+    setIsExporting(true)
+    setExportStatus('')
+
+    const { data, error } = await supabase
+      .from('convidados')
+      .select('id,nome')
+      .order('id', { ascending: true })
+
+    if (error) {
+      setExportStatus('Nao foi possivel gerar a lista.')
+      setIsExporting(false)
+      return
+    }
+
+    const escapeCsv = (value) => {
+      const text = value == null ? '' : String(value)
+      const escaped = text.replace(/"/g, '""')
+      return `"${escaped}"`
+    }
+
+    const rows = data.map((row) =>
+      [row.id, row.nome].map(escapeCsv).join(',')
+    )
+    const csv = ['"id","nome"', ...rows].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const date = new Date().toISOString().slice(0, 10)
+    link.href = url
+    link.download = `convidados-${date}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+    setIsExporting(false)
+  }
+
   return (
     <main className="page">
       <section className="page-section">
@@ -158,6 +196,19 @@ function App() {
             ))}
           </div>
           <div className="section__content" />
+          <button
+            className="export-button"
+            type="button"
+            onClick={handleExportGuests}
+            disabled={isExporting}
+          >
+            
+          </button>
+          {exportStatus ? (
+            <p className="export-status" role="status">
+              {exportStatus}
+            </p>
+          ) : null}
           <button
             className="audio-toggle"
             type="button"
@@ -230,9 +281,9 @@ function App() {
               </div>
             ) : (
               <div className="rsvp-card">
-                <h2 className="rsvp-title">Confirme sua presenca</h2>
+                <h2 className="rsvp-title">Confirme sua presença</h2>
                 <p className="rsvp-text">
-                  Deixe seu nome para confirmar sua presenca na lista.
+                  Deixe seu nome para confirmar sua presença na lista.
                 </p>
                 <form className="rsvp-form" onSubmit={handleSubmit}>
                   <label className="rsvp-field">
@@ -323,7 +374,7 @@ function App() {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Enviando...' : 'Confirmar presenca'}
+                    {isSubmitting ? 'Enviando...' : 'Confirmar presença'}
                   </button>
                 </form>
                 {status.message ? (
@@ -334,17 +385,6 @@ function App() {
               </div>
             )}
           </div>
-          <button
-            className="rsvp-reset rsvp-reset--overlay"
-            type="button"
-            onClick={() => {
-              localStorage.removeItem(storageKey)
-              setHasSubmitted(false)
-              setStatus({ type: '', message: '' })
-            }}
-          >
-            Limpar confirmacao
-          </button>
         </div>
       </section>
     </main>

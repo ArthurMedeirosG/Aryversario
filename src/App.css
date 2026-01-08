@@ -147,6 +147,39 @@
   outline-offset: 2px;
 }
 
+/*Botão de exportar*/
+
+.export-button {
+  position: relative;
+  top: 0%;
+  padding: 5px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: #b34568;
+  font-size: 0.75rem;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.export-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.export-status {
+  position: absolute;
+  top: 52px;
+  right: 16px;
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #b13b46;
+  font-size: 0.7rem;
+  z-index: 3;
+}
+
 .map-pin {
   position: absolute;
   left: 53%;
@@ -369,20 +402,3 @@
   color: #b13b46;
 }
 
-.rsvp-reset {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px dashed #cfa1b2;
-  background: rgba(255, 250, 252, 0.8);
-  color: #7c5665;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.rsvp-reset--overlay {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-}
