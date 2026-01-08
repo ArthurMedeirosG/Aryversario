@@ -1,15 +1,30 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import pageOne from './assets/AryBdayPage1.png'
 import pageTwo from './assets/AryBdayPage2.png'
 import teEsperoLa from './assets/te_espero_la.png'
+import partySong from './assets/Whitney Houston - I Wanna Dance With Somebody.mp3'
 import { supabase } from './supabaseClient'
 import './App.css'
 
+const makeSparkles = (count) =>
+  Array.from({ length: count }, () => ({
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 1.2 + Math.random() * 1.8,
+    scale: 0.6 + Math.random() * 0.9,
+  }))
+
 function App() {
   const storageKey = 'aryversario:rsvp_submitted'
+  const audioRef = useRef(null)
+  const audioSrc = partySong
+  const sparklesOne = useMemo(() => makeSparkles(30), [])
+  const sparklesTwo = useMemo(() => makeSparkles(26), [])
   const [name, setName] = useState('')
   const [status, setStatus] = useState({ type: '', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
   const [bringGuests, setBringGuests] = useState(false)
   const [guestCount, setGuestCount] = useState('1')
   const [guestNames, setGuestNames] = useState([])
@@ -103,6 +118,23 @@ function App() {
     setIsSubmitting(false)
   }
 
+  const handleToggleAudio = async () => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    try {
+      if (audio.paused) {
+        await audio.play()
+        setIsPlaying(true)
+      } else {
+        audio.pause()
+        setIsPlaying(false)
+      }
+    } catch (error) {
+      setIsPlaying(false)
+    }
+  }
+
   return (
     <main className="page">
       <section className="page-section">
@@ -110,7 +142,61 @@ function App() {
           className="page-frame"
           style={{ backgroundImage: `url(${pageOne})` }}
         >
+          <div className="sparkle-layer" aria-hidden="true">
+            {sparklesOne.map((sparkle, index) => (
+              <span
+                key={`sparkle-1-${index}`}
+                className="sparkle"
+                style={{
+                  left: `${sparkle.left}%`,
+                  top: `${sparkle.top}%`,
+                  '--sparkle-delay': `${sparkle.delay}s`,
+                  '--sparkle-duration': `${sparkle.duration}s`,
+                  '--sparkle-scale': `${sparkle.scale}`,
+                }}
+              />
+            ))}
+          </div>
           <div className="section__content" />
+          <button
+            className="audio-toggle"
+            type="button"
+            aria-label={isPlaying ? 'Pausar musica' : 'Tocar musica'}
+            onClick={handleToggleAudio}
+          >
+            {isPlaying ? (
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path d="M8 5v14l11-7L8 5z" />
+              </svg>
+            )}
+          </button>
+          <audio
+            ref={audioRef}
+            src={audioSrc}
+            preload="auto"
+            onEnded={() => setIsPlaying(false)}
+          />
+          <a
+            className="map-pin"
+            href="https://maps.app.goo.gl/WTJVm7AwxRhMLXvq7"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Abrir endereco no Google Maps"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
+            </svg>
+          </a>
         </div>
       </section>
       <section className="page-section">
@@ -118,6 +204,21 @@ function App() {
           className="page-frame"
           style={{ backgroundImage: `url(${pageTwo})` }}
         >
+          <div className="sparkle-layer" aria-hidden="true">
+            {sparklesTwo.map((sparkle, index) => (
+              <span
+                key={`sparkle-2-${index}`}
+                className="sparkle"
+                style={{
+                  left: `${sparkle.left}%`,
+                  top: `${sparkle.top}%`,
+                  '--sparkle-delay': `${sparkle.delay}s`,
+                  '--sparkle-duration': `${sparkle.duration}s`,
+                  '--sparkle-scale': `${sparkle.scale}`,
+                }}
+              />
+            ))}
+          </div>
           <div className="section__content section__content--center">
             {hasSubmitted ? (
               <div className="rsvp-success">
