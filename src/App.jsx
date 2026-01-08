@@ -105,138 +105,146 @@ function App() {
 
   return (
     <main className="page">
-      <section
-        className="page-section"
-        style={{ backgroundImage: `url(${pageOne})` }}
-      >
-        <div className="section__content" />
+      <section className="page-section">
+        <div
+          className="page-frame"
+          style={{ backgroundImage: `url(${pageOne})` }}
+        >
+          <div className="section__content" />
+        </div>
       </section>
-      <section
-        className="page-section page-section--page2"
-        style={{ backgroundImage: `url(${pageTwo})` }}
-      >
-        <div className="section__content section__content--center">
-          {hasSubmitted ? (
-            <div className="rsvp-success">
-              <img
-                className="rsvp-success__image"
-                src={teEsperoLa}
-                alt="Te espero la"
-              />
-            </div>
-          ) : (
-            <div className="rsvp-card">
-              <h2 className="rsvp-title">Confirme sua presenca</h2>
-              <p className="rsvp-text">
-                Deixe seu nome para confirmar sua presenca na lista.
-              </p>
-              <form className="rsvp-form" onSubmit={handleSubmit}>
-                <label className="rsvp-field">
-                  <span>Nome</span>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Seu nome completo"
-                    value={name}
-                    maxLength={20}
-                    onChange={(event) =>
-                      setName(event.target.value.slice(0, 20))
-                    }
-                  />
-                </label>
-                <label className="rsvp-toggle">
-                  <input
-                    type="checkbox"
-                    checked={bringGuests}
-                    onChange={(event) => {
-                      const checked = event.target.checked
-                      setBringGuests(event.target.checked)
-                      if (checked) {
-                        setGuestNames(
-                          Array.from(
-                            { length: Number(guestCount) },
-                            () => ''
-                          )
-                        )
-                      } else {
-                        setGuestNames([])
+      <section className="page-section">
+        <div
+          className="page-frame"
+          style={{ backgroundImage: `url(${pageTwo})` }}
+        >
+          <div className="section__content section__content--center">
+            {hasSubmitted ? (
+              <div className="rsvp-success">
+                <img
+                  className="rsvp-success__image"
+                  src={teEsperoLa}
+                  alt="Te espero la"
+                />
+              </div>
+            ) : (
+              <div className="rsvp-card">
+                <h2 className="rsvp-title">Confirme sua presenca</h2>
+                <p className="rsvp-text">
+                  Deixe seu nome para confirmar sua presenca na lista.
+                </p>
+                <form className="rsvp-form" onSubmit={handleSubmit}>
+                  <label className="rsvp-field">
+                    <span>Nome</span>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Seu nome completo"
+                      value={name}
+                      maxLength={20}
+                      onChange={(event) =>
+                        setName(event.target.value.slice(0, 20))
                       }
-                    }}
-                  />
-                  <span>Vou levar mais convidados</span>
-                </label>
-                {bringGuests ? (
-                  <>
-                    <label className="rsvp-field rsvp-field--inline">
-                      <span>Quantos a mais?</span>
-                      <select
-                        value={guestCount}
-                        onChange={(event) => {
-                          const value = event.target.value
-                          setGuestCount(value)
-                          const count = Number(value)
-                          setGuestNames((prev) =>
-                            Array.from({ length: count }, (_, index) =>
-                              prev[index] ? prev[index].slice(0, 20) : ''
+                    />
+                  </label>
+                  <label className="rsvp-toggle">
+                    <input
+                      type="checkbox"
+                      checked={bringGuests}
+                      onChange={(event) => {
+                        const checked = event.target.checked
+                        setBringGuests(event.target.checked)
+                        if (checked) {
+                          setGuestNames(
+                            Array.from(
+                              { length: Number(guestCount) },
+                              () => ''
                             )
                           )
-                        }}
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                      </select>
-                    </label>
-                    <div className="rsvp-guest-list">
-                      {guestNames.map((guest, index) => (
-                        <label
-                          className="rsvp-field rsvp-field--guest"
-                          key={`guest-${index}`}
+                        } else {
+                          setGuestNames([])
+                        }
+                      }}
+                    />
+                    <span>Vou levar mais convidados</span>
+                  </label>
+                  {bringGuests ? (
+                    <>
+                      <label className="rsvp-field rsvp-field--inline">
+                        <span>Quantos a mais?</span>
+                        <select
+                          value={guestCount}
+                          onChange={(event) => {
+                            const value = event.target.value
+                            setGuestCount(value)
+                            const count = Number(value)
+                            setGuestNames((prev) =>
+                              Array.from({ length: count }, (_, index) =>
+                                prev[index] ? prev[index].slice(0, 20) : ''
+                              )
+                            )
+                          }}
                         >
-                          <span>Convidado {index + 1}</span>
-                          <input
-                            type="text"
-                            placeholder="Nome do convidado"
-                            value={guest}
-                            maxLength={20}
-                            onChange={(event) => {
-                              const value = event.target.value.slice(0, 20)
-                              setGuestNames((prev) => {
-                                const next = [...prev]
-                                next[index] = value
-                                return next
-                              })
-                            }}
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  </>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                        </select>
+                      </label>
+                      <div className="rsvp-guest-list">
+                        {guestNames.map((guest, index) => (
+                          <label
+                            className="rsvp-field rsvp-field--guest"
+                            key={`guest-${index}`}
+                          >
+                            <span>Convidado {index + 1}</span>
+                            <input
+                              type="text"
+                              placeholder="Nome do convidado"
+                              value={guest}
+                              maxLength={20}
+                              onChange={(event) => {
+                                const value = event.target.value.slice(0, 20)
+                                setGuestNames((prev) => {
+                                  const next = [...prev]
+                                  next[index] = value
+                                  return next
+                                })
+                              }}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+                  <button
+                    className="rsvp-submit"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Enviando...' : 'Confirmar presenca'}
+                  </button>
+                </form>
+                {status.message ? (
+                  <p className={`rsvp-status rsvp-status--${status.type}`}>
+                    {status.message}
+                  </p>
                 ) : null}
-                <button className="rsvp-submit" type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Enviando...' : 'Confirmar presenca'}
-                </button>
-              </form>
-              {status.message ? (
-                <p className={`rsvp-status rsvp-status--${status.type}`}>
-                  {status.message}
-                </p>
-              ) : null}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+          <button
+            className="rsvp-reset rsvp-reset--overlay"
+            type="button"
+            onClick={() => {
+              localStorage.removeItem(storageKey)
+              setHasSubmitted(false)
+              setStatus({ type: '', message: '' })
+            }}
+          >
+            Limpar confirmacao
+          </button>
         </div>
-        <button
-          className="rsvp-reset rsvp-reset--overlay"
-          type="button"
-          onClick={() => {
-            localStorage.removeItem(storageKey)
-            setHasSubmitted(false)
-            setStatus({ type: '', message: '' })
-          }}
-        >
-          Limpar confirmacao
-        </button>
       </section>
     </main>
   )
