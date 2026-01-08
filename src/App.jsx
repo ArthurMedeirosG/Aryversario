@@ -317,7 +317,7 @@ function App() {
                       }
                     />
                   </label>
-                  <label className="rsvp-toggle">
+                  {/* <label className="rsvp-toggle">
                     <input
                       type="checkbox"
                       checked={bringGuests}
@@ -337,7 +337,7 @@ function App() {
                       }}
                     />
                     <span>Vou levar mais convidados</span>
-                  </label>
+                  </label> */}
                   {bringGuests ? (
                     <>
                       <label className="rsvp-field rsvp-field--inline">
